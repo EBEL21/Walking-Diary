@@ -5,6 +5,7 @@
 이를 통해 팔자걸음과 같은 잘못된 걸음 습관을 인식하고 교정할 수 있도록 한다. 
 
 ### 시스템 구성
+![Alt text](/img/system_view.PNG)
 
 ### 데이터
 ![Alt text](/img/data_flowchart.PNG)
