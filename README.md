@@ -6,6 +6,6 @@
 ### 시스템 구성
 ![Alt text](/img/system_view_v2.PNG)
 
-### 데이터
+### 데이터 흐름
 ![Alt text](/img/data_flowchart.PNG)
 데이터 흐름도 link: <https://go.gliffy.com/go/publish/12989157>
