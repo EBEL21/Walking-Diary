@@ -5,6 +5,7 @@
 
 ### 시스템 구성
 ![Alt text](/img/system_view_v2.PNG)
+(사용 도구: <https://www.draw.io/>)
 
 ### 데이터 흐름
 ![Alt text](/img/data_flowchart.PNG)
