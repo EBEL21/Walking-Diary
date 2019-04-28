@@ -8,4 +8,4 @@
 
 ### 데이터
 ![Alt text](/img/data_flowchart.PNG)
-데이터 흐름도: <https://go.gliffy.com/go/publish/12989157>
+데이터 흐름도 link: <https://go.gliffy.com/go/publish/12989157>
