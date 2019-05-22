@@ -94,7 +94,7 @@ MPU6050 mpu;
 // (in degrees) calculated from the quaternions coming from the FIFO.
 // Note that Euler angles suffer from gimbal lock (for more info, see
 // http://en.wikipedia.org/wiki/Gimbal_lock)
-//#define OUTPUT_READABLE_EULER
+#define OUTPUT_READABLE_EULER
 
 // uncomment "OUTPUT_READABLE_YAWPITCHROLL" if you want to see the yaw/
 // pitch/roll angles (in degrees) calculated from the quaternions coming
@@ -319,11 +319,11 @@ void loop() {
             mpu.dmpGetQuaternion(&q, fifoBuffer);
             mpu.dmpGetEuler(euler, &q);
             //Serial.print("euler\t");
-            Serial.print(euler[0] * 180/M_PI);
-            Serial.print(",");
-            Serial.print(euler[1] * 180/M_PI);
-            Serial.print(",");
-            Serial.println(euler[2] * 180/M_PI);
+            //Serial.print(euler[0] * 180/M_PI);
+            //Serial.print(",");
+            //Serial.print(euler[1] * 180/M_PI);
+            //Serial.print(",");
+            //Serial.println(euler[2] * 180/M_PI);
         #endif
 
         #ifdef OUTPUT_READABLE_YAWPITCHROLL
@@ -346,13 +346,15 @@ void loop() {
             mpu.dmpGetAccel(&aa, fifoBuffer);
             mpu.dmpGetGravity(&gravity, &q);
             mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
-            char* send_data = new char[20];
-            sprintf(send_data,"%d,%d,%d",aaReal.x,aaReal.y,aaReal.z);
-            for(int i = 0; i < 20; i++) {
+            char* send_data = new char[60];
+            sprintf(send_data,"%d,%d,%d,%f,%f,%f#",aaReal.x,aaReal.y,aaReal.z,euler[0],euler[1],euler[2]);
+            for(int i = 0; i < 60; i++) {
               Serial.write((char)send_data[i]);
+              if(send_data[i] == '#') {
+                break;
+              }
               Serial.flush();
             }
-            Serial.write("#");
             Serial.flush();
             
             /*Serial.print(aaReal.x);
