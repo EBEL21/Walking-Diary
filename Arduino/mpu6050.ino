@@ -94,14 +94,14 @@ MPU6050 mpu;
 // (in degrees) calculated from the quaternions coming from the FIFO.
 // Note that Euler angles suffer from gimbal lock (for more info, see
 // http://en.wikipedia.org/wiki/Gimbal_lock)
-#define OUTPUT_READABLE_EULER
+//#define OUTPUT_READABLE_EULER
 
 // uncomment "OUTPUT_READABLE_YAWPITCHROLL" if you want to see the yaw/
 // pitch/roll angles (in degrees) calculated from the quaternions coming
 // from the FIFO. Note this also requires gravity vector calculations.
 // Also note that yaw/pitch/roll angles suffer from gimbal lock (for
 // more info, see: http://en.wikipedia.org/wiki/Gimbal_lock)
-//#define OUTPUT_READABLE_YAWPITCHROLL
+#define OUTPUT_READABLE_YAWPITCHROLL
 
 // uncomment "OUTPUT_READABLE_REALACCEL" if you want to see acceleration
 // components with gravity removed. This acceleration reference frame is
@@ -163,6 +163,10 @@ void dmpDataReady() {
 }
 
 
+// pressure sensor ra-18
+int SensorPin = A0; //analog pin 0
+
+
 
 // ================================================================
 // ===                      INITIAL SETUP                       ===
@@ -190,7 +194,8 @@ void setup() {
     // crystal solution for the UART timer.
 
     // initialize device
-    Serial.println(F("Initializing I2C devices..."));
+    //Serial.println(F("Initializing I2C devices..."));
+    
     mpu.initialize();
     pinMode(INTERRUPT_PIN, INPUT);
 
@@ -209,10 +214,12 @@ void setup() {
     devStatus = mpu.dmpInitialize();
 
     // supply your own gyro offsets here, scaled for min sensitivity
-    mpu.setXGyroOffset(220);
-    mpu.setYGyroOffset(76);
-    mpu.setZGyroOffset(-85);
-    mpu.setZAccelOffset(1788); // 1688 factory default for my test chip
+    mpu.setXAccelOffset(-2900);
+    mpu.setYAccelOffset(-3600);
+    mpu.setZAccelOffset(1950);
+    mpu.setXGyroOffset(86);
+    mpu.setYGyroOffset(8);
+    mpu.setZGyroOffset(-16);
 
     // make sure it worked (returns 0 if so)
     if (devStatus == 0) {
@@ -332,11 +339,7 @@ void loop() {
             mpu.dmpGetGravity(&gravity, &q);
             mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
             //Serial.print("{");
-            Serial.print(ypr[0] * 180/M_PI);
-            Serial.print(",");
-            Serial.print(ypr[1] * 180/M_PI);
-            Serial.print(",");
-            Serial.println(ypr[2] * 180/M_PI);
+            
             //Serial.println("}");     
         #endif
 
@@ -346,9 +349,10 @@ void loop() {
             mpu.dmpGetAccel(&aa, fifoBuffer);
             mpu.dmpGetGravity(&gravity, &q);
             mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
-            char* send_data = new char[60];
-            sprintf(send_data,"%d,%d,%d,%f,%f,%f#",aaReal.x,aaReal.y,aaReal.z,euler[0],euler[1],euler[2]);
-            for(int i = 0; i < 60; i++) {
+            int pressure = analogRead(SensorPin);
+            char* send_data = new char[80];
+            sprintf(send_data,"data,%d,%d,%d,%.3f,%.3f,%.3f,%d#",aaReal.x,aaReal.y,aaReal.z,ypr[0],ypr[1],ypr[2],pressure);
+            for(int i = 0; i < 70; i++) {
               Serial.write((char)send_data[i]);
               if(send_data[i] == '#') {
                 break;
@@ -399,7 +403,8 @@ void loop() {
         //blinkState = !blinkState;
         //digitalWrite(LED_PIN, blinkState);
         mpu.resetFIFO();
-        delay(50);
+        delete send_data;
+        //delay(50);
     }
 }
 
