@@ -21,10 +21,10 @@ app.get('/query', function(req,res) {
 		var righ_data;
 		var result;
     //count[0]: 정상 count[1]: 팔자 count[2]: 안짱
-    connection.query(`SELECT * from gyro where pressure > 800 and side = 82`, function(err, rows, fields) {
+    connection.query(`SELECT * from L_gyro where pressure > 800`, function(err, rows, fields) {
         // connection.end();
-        left_data = filter.Arrange_data(rows); // right
-        connection.query(`SELECT * from gyro where pressure > 800 and side = 76`, function(err, rows, fields) {
+        left_data = filter.Arrange_data(rows); // left
+        connection.query(`SELECT * from R_gyro where pressure > 800`, function(err, rows, fields) {
             right_data = filter.Arrange_data(rows);
 						result = filter.filtering(left_data,right_data,right_data.length);
             res.send(result)
